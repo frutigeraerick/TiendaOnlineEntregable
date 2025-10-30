@@ -25,3 +25,20 @@ class ProductoBase(BaseModel):
     stock: int = Field(..., ge=0, description="Cantidad en stock (no puede ser negativa)")
     descripcion: Optional[str] = Field(None, max_length=300, description="Descripcion del producto")
     activa: Optional[bool] = True
+
+class ProductoCreate(ProductoBase):
+    categoria_id: int = Field(..., description="ID de la categoria en la que esta el producto")
+
+    @validator("nombre")
+    def validar_nombre(cls, v):
+        if not v.strip():
+            raise ValueError("El nombre del producto no puede estar vacio")
+        return v
+
+class ProductoUpdate(BaseModel):
+    nombre: Optional[str] = Field(None, min_length=2, max_length=100)
+    precio: Optional[float] = Field(None, gt=0)
+    stock: Optional[int] = Field(None, ge=0)
+    descripcion: Optional[str] = Field(None, max_length=300)
+    activa: Optional[bool] = None
+    categoria_id: Optional[int] = None
