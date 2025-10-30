@@ -57,3 +57,19 @@ def crear_producto(db: Session, producto: schemas.ProductoCreate):
     db.commit()
     db.refresh(nuevo_producto)
     return nuevo_producto
+
+def listar_productos(db: Session, categoria_id: int = None, stock_min: int = None, precio_max: float = None):
+    query = db.query(models.Producto).filter(models.Producto.activa == True)
+    if categoria_id:
+        query = query.filter(models.Producto.categoria_id == categoria_id)
+    if stock_min is not None:
+        query = query.filter(models.Producto.stock >= stock_min)
+    if precio_max is not None:
+        query = query.filter(models.Producto.precio <= precio_max)
+    return query.all()
+
+def obtener_producto_con_categoria(db: Session, producto_id: int):
+    producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    if not producto:
+        raise HTTPException(status_code=404, detail="No se encontro el producto.")
+    return producto
