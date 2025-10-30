@@ -43,7 +43,12 @@ def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_d
     return crud.crear_producto(db, producto)
 
 @app.get("/productos/", response_model=list[schemas.ProductoRead])
-def listar_productos(categoria_id: int = None, stock_min: int = None, precio_max: float = None, db: Session = Depends(get_db)):
+def listar_productos(
+    categoria_id: int = None,
+    stock_min: int = None,
+    precio_max: float = None,
+    db: Session = Depends(get_db)
+):
     return crud.listar_productos(db, categoria_id, stock_min, precio_max)
 
 @app.get("/productos/{producto_id}", response_model=schemas.ProductoReadConCategoria)

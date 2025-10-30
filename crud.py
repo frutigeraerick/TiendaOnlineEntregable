@@ -5,21 +5,31 @@ import models, schemas
 def crear_categoria(db: Session, categoria: schemas.CategoriaCreate):
     existente = db.query(models.Categoria).filter(models.Categoria.nombre == categoria.nombre).first()
     if existente:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Ya existe una categoria con ese nombre.")
-    nueva_categoria = models.Categoria(nombre=categoria.nombre, descripcion=categoria.descripcion, activa=True)
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Ya existe una categoria con ese nombre."
+        )
+    nueva_categoria = models.Categoria(
+        nombre=categoria.nombre,
+        descripcion=categoria.descripcion,
+        activa=True
+    )
     db.add(nueva_categoria)
     db.commit()
     db.refresh(nueva_categoria)
     return nueva_categoria
 
+
 def obtener_categorias_activas(db: Session):
     return db.query(models.Categoria).filter(models.Categoria.activa == True).all()
+
 
 def obtener_categoria_con_productos(db: Session, categoria_id: int):
     categoria = db.query(models.Categoria).filter(models.Categoria.id == categoria_id).first()
     if not categoria:
         raise HTTPException(status_code=404, detail="No se encontro la categoria.")
     return categoria
+
 
 def actualizar_categoria(db: Session, categoria_id: int, datos: schemas.CategoriaUpdate):
     categoria = db.query(models.Categoria).filter(models.Categoria.id == categoria_id).first()
@@ -30,6 +40,7 @@ def actualizar_categoria(db: Session, categoria_id: int, datos: schemas.Categori
     db.commit()
     db.refresh(categoria)
     return categoria
+
 
 def desactivar_categoria(db: Session, categoria_id: int):
     categoria = db.query(models.Categoria).filter(models.Categoria.id == categoria_id).first()
@@ -58,6 +69,7 @@ def crear_producto(db: Session, producto: schemas.ProductoCreate):
     db.refresh(nuevo_producto)
     return nuevo_producto
 
+
 def listar_productos(db: Session, categoria_id: int = None, stock_min: int = None, precio_max: float = None):
     query = db.query(models.Producto).filter(models.Producto.activa == True)
     if categoria_id:
@@ -68,11 +80,13 @@ def listar_productos(db: Session, categoria_id: int = None, stock_min: int = Non
         query = query.filter(models.Producto.precio <= precio_max)
     return query.all()
 
+
 def obtener_producto_con_categoria(db: Session, producto_id: int):
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
     if not producto:
         raise HTTPException(status_code=404, detail="No se encontro el producto.")
     return producto
+
 
 def actualizar_producto(db: Session, producto_id: int, datos: schemas.ProductoUpdate):
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
@@ -86,6 +100,7 @@ def actualizar_producto(db: Session, producto_id: int, datos: schemas.ProductoUp
     db.refresh(producto)
     return producto
 
+
 def desactivar_producto(db: Session, producto_id: int):
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
     if not producto:
@@ -93,6 +108,7 @@ def desactivar_producto(db: Session, producto_id: int):
     producto.activa = False
     db.commit()
     return {"mensaje": "El producto ha sido desactivado."}
+
 
 def restar_stock(db: Session, producto_id: int, cantidad: int):
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()

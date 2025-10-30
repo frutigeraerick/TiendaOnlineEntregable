@@ -18,7 +18,6 @@ class CategoriaOut(CategoriaBase):
     id: int
     class Config:
         orm_mode = True
-
 class ProductoBase(BaseModel):
     nombre: str = Field(..., min_length=2, max_length=100, description="Nombre del producto")
     precio: float = Field(..., gt=0, description="Precio del producto (mayor que 0)")

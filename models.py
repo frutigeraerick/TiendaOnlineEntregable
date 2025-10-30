@@ -15,6 +15,7 @@ class Categoria(Base):
     def __repr__(self):
         return f"<Categoria(nombre={self.nombre}, activa={self.activa})>"
 
+
 class Producto(Base):
     __tablename__ = "productos"
 
