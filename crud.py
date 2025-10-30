@@ -40,3 +40,20 @@ def desactivar_categoria(db: Session, categoria_id: int):
         producto.activa = False
     db.commit()
     return {"mensaje": "La categoria y sus productos han sido desactivados correctamente."}
+
+def crear_producto(db: Session, producto: schemas.ProductoCreate):
+    categoria = db.query(models.Categoria).filter(models.Categoria.id == producto.categoria_id).first()
+    if not categoria or not categoria.activa:
+        raise HTTPException(status_code=400, detail="La categoria no existe o esta inactiva.")
+    nuevo_producto = models.Producto(
+        nombre=producto.nombre,
+        precio=producto.precio,
+        stock=producto.stock,
+        descripcion=producto.descripcion,
+        activa=True,
+        categoria_id=producto.categoria_id
+    )
+    db.add(nuevo_producto)
+    db.commit()
+    db.refresh(nuevo_producto)
+    return nuevo_producto
