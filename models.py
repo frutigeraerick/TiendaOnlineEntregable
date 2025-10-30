@@ -14,3 +14,19 @@ class Categoria(Base):
 
     def __repr__(self):
         return f"<Categoria(nombre={self.nombre}, activa={self.activa})>"
+
+class Producto(Base):
+    __tablename__ = "productos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String, index=True, nullable=False)
+    precio = Column(Float, nullable=False)
+    stock = Column(Integer, nullable=False, default=0)
+    descripcion = Column(String, nullable=True)
+    activa = Column(Boolean, default=True)
+    categoria_id = Column(Integer, ForeignKey("categorias.id"), nullable=False)
+
+    categoria = relationship("Categoria", back_populates="productos")
+
+    def __repr__(self):
+        return f"<Producto(nombre={self.nombre}, stock={self.stock}, activa={self.activa})>"
