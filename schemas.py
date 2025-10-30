@@ -42,3 +42,17 @@ class ProductoUpdate(BaseModel):
     descripcion: Optional[str] = Field(None, max_length=300)
     activa: Optional[bool] = None
     categoria_id: Optional[int] = None
+
+class ProductoOut(ProductoBase):
+    id: int
+    categoria_id: int
+    class Config:
+        orm_mode = True
+
+class CategoriaConProductos(CategoriaOut):
+    productos: List[ProductoOut] = []
+
+CategoriaRead = CategoriaOut
+ProductoRead = ProductoOut
+CategoriaReadConProductos = CategoriaConProductos
+ProductoReadConCategoria = ProductoOut
