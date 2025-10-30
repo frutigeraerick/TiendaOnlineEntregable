@@ -1,10 +1,9 @@
 from fastapi import FastAPI, Depends, status
 from sqlalchemy.orm import Session
-from sqlmodel import SQLModel
 import models, schemas, crud
-from database import engine, SessionLocal
+from database import engine, SessionLocal, Base
 
-SQLModel.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="API de Categorías y Productos",
